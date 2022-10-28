@@ -51,9 +51,9 @@
 </head>
 <body>
 <div id="VueBox">
-    机选<input type="number" v-model="zhushu"/>注
-    -{{2 * zhushu}}元
-    <button style="width: 80px;cursor: pointer;" @click="jixuan()" :disabled="zhushu <= 0">机选</button>
+    <input type="number" style="width: 80px;" v-model="zhushu"/>注
+    <button style="width: 80px;cursor: pointer;" @click="jixuan()" :disabled="zhushu <= 0">机选{{zhushu}}注</button>
+    <span style="color: limegreen;">-{{2 * zhushu}}元</span>
     <br/>
     <div v-for="(item,index) in jixuanResult" :key="index">
         <span class="jx-red-ball" :class="{match:item.red_format[0].match}">{{item.red_format[0].num}}</span>
@@ -63,7 +63,7 @@
         <span class="jx-red-ball" :class="{match:item.red_format[4].match}">{{item.red_format[4].num}}</span>
         <span class="jx-red-ball" :class="{match:item.red_format[5].match}">{{item.red_format[5].num}}</span>
         <span class="jx-blue-ball" :class="{match:item.blue_format[0].match}">{{item.blue_format[0].num}}</span>
-        <span style="color: red;" v-show="item.duijiang > 0">+{{item.duijiang}}元</span>
+        <span style="color: orangered;" v-show="item.duijiang > 0">+{{item.duijiang}}元</span>
         <br/>
     </div>
     <br/>
