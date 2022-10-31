@@ -35,14 +35,16 @@
         }
 
         .kj-red-ball {
-            color: #f54646;
+            color: #fff;
+            background-color: #f54646;
             border: 2px solid #f54646;
             border-radius: 50%;
             padding: 2px;
         }
 
         .kj-blue-ball {
-            color: #39f;
+            color: #fff;
+            background-color: #39f;
             border: 2px solid #39f;
             border-radius: 50%;
             padding: 2px;
@@ -51,10 +53,9 @@
 </head>
 <body>
 <div id="VueBox">
-    <input type="number" style="width: 80px;" v-model="zhushu"/>注
-    <button style="width: 80px;cursor: pointer;" @click="jixuan()" :disabled="zhushu <= 0">机选{{zhushu}}注</button>
-    <span style="color: limegreen;">-{{2 * zhushu}}元</span>
-    <br/>
+    <input type="number" style="width: 80px;" v-model="zhushu" oninput="value=value.replace(/^(0+)|[^\d]+/g,'')"/>
+    <button style="cursor: pointer;" @click="jixuan()" :disabled="zhushu <= 0">机选{{zhushu}}注</button>
+    <br/><br/>
     <div v-for="(item,index) in jixuanResult" :key="index">
         <span class="jx-red-ball" :class="{match:item.red_format[0].match}">{{item.red_format[0].num}}</span>
         <span class="jx-red-ball" :class="{match:item.red_format[1].match}">{{item.red_format[1].num}}</span>
@@ -63,26 +64,37 @@
         <span class="jx-red-ball" :class="{match:item.red_format[4].match}">{{item.red_format[4].num}}</span>
         <span class="jx-red-ball" :class="{match:item.red_format[5].match}">{{item.red_format[5].num}}</span>
         <span class="jx-blue-ball" :class="{match:item.blue_format[0].match}">{{item.blue_format[0].num}}</span>
-        <span style="color: orangered;" v-show="item.duijiang > 0">+{{item.duijiang}}元</span>
+        <span style="color: orangered;" v-show="item.duijiang > 0">+{{item.duijiang}}</span>
         <br/>
     </div>
     <br/>
     <button style="width: 80px;cursor: pointer;" @click="kaijiang()" :disabled="jixuanResult.length === 0">开奖</button>
     <br/><br/>
-    <span class="kj-red-ball" v-show="kj_red1">{{kj_red1}}</span>
-    <span class="kj-red-ball" v-show="kj_red2">{{kj_red2}}</span>
-    <span class="kj-red-ball" v-show="kj_red3">{{kj_red3}}</span>
-    <span class="kj-red-ball" v-show="kj_red4">{{kj_red4}}</span>
-    <span class="kj-red-ball" v-show="kj_red5">{{kj_red5}}</span>
-    <span class="kj-red-ball" v-show="kj_red6">{{kj_red6}}</span>
-    <span class="kj-blue-ball" v-show="kj_blue">{{kj_blue}}</span>
+    <span class="kj-red-ball" v-if="kj_red1">{{kj_red1}}</span>
+    <span class="kj-red-ball" v-else>??</span>
+    <span class="kj-red-ball" v-if="kj_red2">{{kj_red2}}</span>
+    <span class="kj-red-ball" v-else>??</span>
+    <span class="kj-red-ball" v-if="kj_red3">{{kj_red3}}</span>
+    <span class="kj-red-ball" v-else>??</span>
+    <span class="kj-red-ball" v-if="kj_red4">{{kj_red4}}</span>
+    <span class="kj-red-ball" v-else>??</span>
+    <span class="kj-red-ball" v-if="kj_red5">{{kj_red5}}</span>
+    <span class="kj-red-ball" v-else>??</span>
+    <span class="kj-red-ball" v-if="kj_red6">{{kj_red6}}</span>
+    <span class="kj-red-ball" v-else>??</span>
+    <span class="kj-blue-ball" v-if="kj_blue">{{kj_blue}}</span>
+    <span class="kj-blue-ball" v-else>??</span>
+    <br/><br/>
+    累计<span style="color: limegreen;">-{{leijiCost}}</span>元
+    <br/>
+    累计<span style="color: orangered;">+{{leijiZhongjiang}}</span>元
 </div>
 </body>
 <script>
     new Vue({
         el: '#VueBox',
         data: {
-            zhushu: 10,
+            zhushu: 5,
             jixuanResult: [],
             redBall: [
                 '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
@@ -94,6 +106,7 @@
                 '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
                 '11', '12', '13', '14', '15', '16',
             ],
+            //开奖
             kj_red1: null,
             kj_red2: null,
             kj_red3: null,
@@ -101,6 +114,9 @@
             kj_red5: null,
             kj_red6: null,
             kj_blue: null,
+            //累计
+            leijiCost: 0,
+            leijiZhongjiang: 0,
         },
         methods: {
             jixuan() {
@@ -183,7 +199,9 @@
                     } else {
                         item1.duijiang = 0;
                     }
+                    this.leijiZhongjiang += item1.duijiang;
                 });
+                this.leijiCost += this.jixuanResult.length * 2;
             },
             getRandomArrayValue(arr, num) {
                 var sData = arr.slice(0), i = arr.length, min = i - num, item, index;
@@ -210,7 +228,6 @@
             },
         },
         mounted() {
-
         },
         watch: {},
     });
